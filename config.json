@@ -1,0 +1,84 @@
+{
+  "tools": [
+    {
+      "name": "Screen Recorder",
+      "category": "Multimedia",
+      "exePath": "OBS/obs64.exe",
+      "desc": "Record classroom lectures and software demos",
+      "icon": "icons/obs.png",
+      "requireAdmin": false,
+      "author": "OBS Project",
+      "website": "https://obsproject.com/"
+    },
+    {
+      "name": "Media Player",
+      "category": "Multimedia",
+      "exePath": "VLC/vlc.exe",
+      "desc": "Play video, audio and teaching materials",
+      "icon": "icons/vlc.png",
+      "requireAdmin": false,
+      "author": "VideoLAN",
+      "website": "https://www.videolan.org/"
+    },
+    {
+      "name": "Camera Tester",
+      "category": "Device Check",
+      "exePath": "CameraTest/CameraTest.exe",
+      "desc": "Quickly verify webcam availability",
+      "icon": "icons/camera.png",
+      "requireAdmin": false,
+      "author": "",
+      "website": ""
+    },
+    {
+      "name": "Microphone Tester",
+      "category": "Device Check",
+      "exePath": "MicTest/MicTest.exe",
+      "desc": "Test microphone input and audio recording",
+      "icon": "icons/mic.png",
+      "requireAdmin": false,
+      "author": "",
+      "website": ""
+    },
+    {
+      "name": "Network Speed Test",
+      "category": "Network Tools",
+      "exePath": "SpeedTest/SpeedTest.exe",
+      "desc": "Measure classroom upload and download speed",
+      "icon": "icons/speedtest.png",
+      "requireAdmin": false,
+      "author": "Ookla",
+      "website": "https://www.speedtest.net/"
+    },
+    {
+      "name": "Media Converter",
+      "category": "Multimedia",
+      "exePath": "FFmpeg/ffmpeg-gui.exe",
+      "desc": "Convert video, audio and image formats",
+      "icon": "icons/ffmpeg.png",
+      "requireAdmin": false,
+      "author": "",
+      "website": ""
+    },
+    {
+      "name": "Class Timer",
+      "category": "Teaching Aids",
+      "exePath": "ClassTimer/ClassTimer.exe",
+      "desc": "Countdown timer for classroom activities",
+      "icon": "icons/timer.png",
+      "requireAdmin": false,
+      "author": "",
+      "website": ""
+    },
+    {
+      "name": "Batch Renamer",
+      "category": "System Tools",
+      "exePath": "BatchRename/BatchRename.exe",
+      "desc": "Batch rename documents, videos and images",
+      "icon": "icons/rename.png",
+      "requireAdmin": false,
+      "author": "",
+      "website": ""
+    }
+  ]
+}
