@@ -72,7 +72,7 @@ FluentPage {
                         id: tapHandler
                         onTapped: {
                             console.log("准备启动工具，传入路径:", modelData.exePath);
-                            AppLauncher.launch(modelData.exePath);
+                            AppLauncher.launch(modelData.exePath, false);
                         }
                     }
                     // 卡片内容：图标在上、文字在下

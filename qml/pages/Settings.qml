@@ -132,7 +132,7 @@ FluentPage {
             // 版本号
             content: Text {
                 color: Theme.currentTheme.colors.textSecondaryColor
-                text: "v0.1.0"
+                text: "v0.1.1"
             }
 
             // 项目仓库
