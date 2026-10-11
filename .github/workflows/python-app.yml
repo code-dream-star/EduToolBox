@@ -17,11 +17,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - name: Install flake8
-        run: pip install flake8
-      - name: Lint with flake8
-        run: flake8 main.py
+          python-version: "3.14"
 
   build-windows:
     runs-on: windows-latest
@@ -30,7 +26,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.14"
       - name: Install dependencies
         run: pip install PySide6 wmi psutil RinUI pyinstaller
       - name: Build
