@@ -8,22 +8,21 @@ FluentPage {
     title: "软件工具"
     // 可滚动容器：卡片超出页面时可纵向滚动
     ScrollView {
-        id: scrollView                // 用于绑定子项宽度，保证 Flow 按视口宽度排列
-        anchors.fill: parent          // 填满整个页面
-        clip: true                    // 裁剪超出区域
+        id: scrollView                    // 用于绑定子项宽度，保证 Flow 按视口宽度排列
+        anchors.fill: parent              // 填满整个页面
+        clip: true                        // 裁剪超出区域
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff  // 隐藏横向滚动条（Flow 自动换行，不需要横向滚动）
         // Flow 布局：根据宽度自动计算每行卡片数量，装不下自动换行
         Flow {
             width: scrollView.width // 关键：绑定 ScrollView 宽度，才能按实际可用宽度排列
             spacing: 20             // 卡片之间的间距（横向和纵向）
-            padding: 0             // 四周内边距
+            padding: 0              // 四周内边距
             layoutDirection: Qt.LeftToRight  // 从左到右排列
             // 数据模型：每个元素对应一个工具卡片
             // name    = 卡片主标题
             // icon    = RinUI 字体图标名称（见 FluentSystemIcons-Index.js）
             // desc    = 卡片副标题/描述
-            // exePath = 点击卡片时启动的程序路径（可填 exe / cpl / 文件夹等）
-            //         ↓ 工具路径可简写，程序会自动加 tools/ 前缀，例如 "AppTool/geek.exe"
+            // exePath = 点击卡片时启动的程序路径
             Repeater {
                 model: [
                     {
@@ -72,8 +71,8 @@ FluentPage {
                     TapHandler {
                         id: tapHandler
                         onTapped: {
-                            console.log("打开工具:", modelData.name);
-                            AppLauncher.launch(modelData.exePath);  // 调用 Python 启动 exe
+                            console.log("准备启动工具，传入路径:", modelData.exePath);
+                            AppLauncher.launch(modelData.exePath);
                         }
                     }
                     // 卡片内容：图标在上、文字在下
@@ -97,19 +96,19 @@ FluentPage {
                             anchors.horizontalCenter: parent.horizontalCenter
                             horizontalAlignment: Text.AlignHCenter  // 文字内部水平居中
                             maximumLineCount: 1      // 只显示一行
-                            elide: Text.ElideRight    // 文字过长时末尾显示省略号
+                            elide: Text.ElideRight   // 文字过长时末尾显示省略号
                         }
-                        // 工具描述（副标题） ✅ 修改这里，增加 width: parent.width
+                        // 工具描述（副标题）
                         Text {
                             text: modelData.desc
                             font.pixelSize: 11
                             color: Theme.currentTheme.colors.textSecondaryColor
                             anchors.horizontalCenter: parent.horizontalCenter
                             horizontalAlignment: Text.AlignHCenter
-                            width: parent.width          // 限制文本宽度，自动换行生效
-                            wrapMode: Text.Wrap          // 允许换行
-                            maximumLineCount: 2          // 最多显示两行
-                            elide: Text.ElideRight       // 超过两行时末尾省略
+                            width: parent.width        // 限制文本宽度，自动换行生效
+                            wrapMode: Text.Wrap        // 允许换行
+                            maximumLineCount: 2        // 最多显示两行
+                            elide: Text.ElideRight     // 超过两行时末尾省略
                         }
                     }
                 }

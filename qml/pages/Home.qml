@@ -68,7 +68,7 @@ FluentPage {
             spacing: 20
             // Tool.png 图标
             Image {
-                source: "../../Tool.png"
+                source: "../../assets/Tool.png"
                 width: 80
                 height: 80
                 fillMode: Image.PreserveAspectFit

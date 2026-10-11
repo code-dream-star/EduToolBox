@@ -1,11 +1,24 @@
 import os
 import sys
+import subprocess
+# ========== 打包后路径修复，必须放在最前面 ==========
+if hasattr(sys, '_MEIPASS'):
+    # 打包后运行
+    BASE_PATH = sys._MEIPASS
+else:
+    # 本地源码调试运行
+    BASE_PATH = os.path.abspath(".")
+# 把 _internal 加入系统路径，让RinUI可以找到自己
+if os.path.exists(os.path.join(BASE_PATH, "_internal")):
+    sys.path.insert(0, os.path.join(BASE_PATH, "_internal"))
+os.chdir(BASE_PATH)
 import platform
 import wmi
 import psutil
 from time import time
 from PySide6.QtCore import QLocale, QObject, Signal, Slot, Property, QTimer
 from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QIcon
 import RinUI
 from RinUI import RinUIWindow
 from RinUI.core.translator import RinUITranslator
@@ -15,7 +28,6 @@ from utils.screenInfo import get_monitor_info
 class SystemInfoBackend(QObject):
     # 信号：uptime属性更新时触发
     uptimeChanged = Signal()
-
     def __init__(self, parent=None):
         super().__init__(parent)
         self.w = None
@@ -23,9 +35,7 @@ class SystemInfoBackend(QObject):
             self.w = wmi.WMI()
         except Exception as e:
             print("WMI初始化失败:", e)
-
         self._monitor = get_monitor_info()
-
         # ========== 处理器 ==========
         self._cpu = "未知"
         try:
@@ -33,7 +43,6 @@ class SystemInfoBackend(QObject):
             if cpus:
                 self._cpu = cpus[0].Name.strip()
         except: pass
-
         # ========== 主板 ==========
         self._motherboard = "未知"
         try:
@@ -41,7 +50,6 @@ class SystemInfoBackend(QObject):
             if boards:
                 self._motherboard = f"{boards[0].Manufacturer} {boards[0].Product}".strip()
         except: pass
-
         # ========== 内存 ==========
         self._memory = "未知"
         try:
@@ -56,16 +64,12 @@ class SystemInfoBackend(QObject):
             except: pass
             self._memory = f"{total_gb} GB{mem_speed}"
         except: pass
-
         self._gpu = "未知"
         try:
             gpus = self.w.Win32_VideoController()
             gpu_list = [gpu.Name.strip() for gpu in gpus if gpu.Name]
             self._gpu = "\n".join(gpu_list)
         except: pass
-
-
-
         # ========== 磁盘（物理硬盘合并） ==========
         self._disk = "未知"
         try:
@@ -78,7 +82,6 @@ class SystemInfoBackend(QObject):
             if disk_list:
                 self._disk = "\n".join(disk_list)
         except: pass
-
         # ========== 声卡 ==========
         self._soundcard = "未知"
         try:
@@ -87,7 +90,6 @@ class SystemInfoBackend(QObject):
             if sound_list:
                 self._soundcard = "\n".join(sound_list)
         except: pass
-
         # ========== 网卡 ==========
         self._network_card = "未知"
         try:
@@ -99,17 +101,14 @@ class SystemInfoBackend(QObject):
             if nic_list:
                 self._network_card = "\n".join(nic_list)
         except: pass
-
         # ========== 系统版本 ==========
         self._systemVersion = platform.platform()
-
         # ========== 系统运行时间 动态刷新 ==========
         self._uptime = self._get_uptime_text()
         # 定时器 1000ms(1秒)刷新一次
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._update_uptime)
         self.timer.start(1000)
-
     def _get_uptime_text(self):
         try:
             boot_ts = psutil.boot_time()
@@ -127,50 +126,39 @@ class SystemInfoBackend(QObject):
         except Exception as e:
             print("读取运行时间失败", e)
             return "未知"
-
     def _update_uptime(self):
         new_val = self._get_uptime_text()
         if new_val != self._uptime:
             self._uptime = new_val
             self.uptimeChanged.emit()
-
     # ========== QML可读取属性 ==========
     @Property(str, constant=True)
     def cpu(self):
         return self._cpu
-
     @Property(str, constant=True)
     def motherboard(self):
         return self._motherboard
-
     @Property(str, constant=True)
     def memory(self):
         return self._memory
-
     @Property(str, constant=True)
     def gpu(self):
         return self._gpu
-
     @Property(str, constant=True)
     def monitor(self):
         return self._monitor
-
     @Property(str, constant=True)
     def disk(self):
         return self._disk
-
     @Property(str, constant=True)
     def soundcard(self):
         return self._soundcard
-
     @Property(str, constant=True)
     def networkCard(self):
         return self._network_card
-
     @Property(str, constant=True)
     def systemVersion(self):
         return self._systemVersion
-
     # uptime：动态属性，notify绑定信号
     @Property(str, notify=uptimeChanged)
     def uptime(self):
@@ -183,28 +171,24 @@ class AppLauncher(QObject):
     def launch(self, path: str):
         """
         启动指定路径的程序
-        :param path: 程序路径（exe / cpl / 或任何可被系统打开的文件）
-                     支持简写：相对工具路径会自动加上 tools/ 前缀，
-                     例如 "AppTool/geek.exe" 会被解析为 "tools/AppTool/geek.exe"
-                     系统命令（如 explorer.exe、notepad.exe、mmsys.cpl）
-                     和绝对路径（如 C:/...）保持不变
+        :param path: QML传入字符串
+            1. 内置工具简写："geek.exe" → 自动拼接 BASE_PATH/tools/geek.exe
+            2. 系统命令：notepad.exe / mmsys.cpl 直接调用系统
+            3. 绝对路径：C:/xxx.exe 原样使用
         """
-        # final_path 用于记录最终要启动的路径，确保异常分支也能引用
         final_path = path
         try:
-            # 路径解析：非绝对路径且包含目录分隔符时，自动加上 tools/ 前缀
-            # 这样配置里就可以简写为 "AppTool/geek.exe"，无需每次都写 "tools/AppTool/geek.exe"
+            # 判断：不是绝对路径，当成内置工具处理
             if not os.path.isabs(path):
-                # 包含目录分隔符说明是工具子目录路径（如 AppTool/geek.exe）
-                # 不包含分隔符则视为系统命令（如 explorer.exe、notepad.exe、mmsys.cpl）
-                if os.sep in path or '/' in path:
-                    # 统一用正斜杠判断是否已带 tools/ 前缀，避免重复添加
-                    normalized = path.replace('\\', '/')
-                    if not normalized.startswith('tools/'):
-                        final_path = os.path.join('tools', path)
-            # os.startfile 会用系统默认方式打开，支持 exe、cpl、文件夹等
-            os.startfile(final_path)
-            print(f"启动程序: {final_path}")
+                # 拼接基础路径 + tools文件夹
+                final_path = os.path.join(BASE_PATH, "tools", path)
+                # 如果文件不存在，说明是系统命令（notepad.exe / cpl面板），恢复原始path
+                if not os.path.exists(final_path):
+                    final_path = path
+
+            print(f"尝试启动: {final_path}")
+            # 启动程序，不阻塞主窗口
+            subprocess.Popen(final_path, shell=True)
         except Exception as e:
             print(f"启动失败 [{final_path}]: {e}")
 
@@ -212,19 +196,21 @@ class AppLauncher(QObject):
 if __name__ == '__main__':
     print(RinUI.__file__)
     app = QApplication(sys.argv)
+    # 窗口图标：使用全局BASE_PATH，统一路径
+    icon_path = os.path.join(BASE_PATH, "assets", "Tool.ico")
+    print(f"窗口图标路径：{icon_path}，存在：{os.path.exists(icon_path)}")
+    app.setWindowIcon(QIcon(icon_path))
+
     # 创建 RinUI 窗口（不传 qml_path，先注入上下文再手动加载）
     gallery = RinUIWindow()
-
     # 创建实例，注入上下文
     app_launcher = AppLauncher()
     sys_info_backend = SystemInfoBackend()
-
     # 注入两个对象到QML全局上下文
     gallery.engine.rootContext().setContextProperty("AppLauncher", app_launcher)
     gallery.engine.rootContext().setContextProperty("SysInfo", sys_info_backend)
-
     # 注入完成后再加载 QML
     gallery.load("qml/Main.qml")
-    gallery.setIcon("Tool.ico")
+    gallery.setIcon(icon_path)
     gallery.setProperty("title", f"电教工具箱")
     app.exec()

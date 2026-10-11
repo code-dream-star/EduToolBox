@@ -126,7 +126,7 @@ FluentPage {
             width: parent.width
             title: "EduToolBox"
             description: "教育工具合集"
-            icon.source: Qt.resolvedUrl("../../Tool.png")
+            icon.source: Qt.resolvedUrl("../../assets/Tool.png")
             icon.size: 28
 
             // 版本号
