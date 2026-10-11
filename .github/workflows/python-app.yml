@@ -1,0 +1,42 @@
+name: EduToolBox
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Install dependencies
+        run: pip install PySide6 wmi psutil RinUI pyinstaller
+      - name: Build
+        run: |
+          pyinstaller main.py `
+          --onedir `
+          --name=EduToolBox `
+          --collect-all RinUI `
+          --collect-all PySide6 `
+          --add-data "qml;qml" `
+          --add-data "utils;utils" `
+          --add-data "assets;assets" `
+          --add-data "tools;tools"
