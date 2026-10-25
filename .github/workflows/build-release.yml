@@ -155,8 +155,7 @@ jobs:
       - name: 🏗️ Build Windows Installer
         shell: cmd
         run: |
-          set CW_VERSION=${{ steps.version.outputs.version }}
-          iscc scripts\edutoolbox-cicd.iss
+          iscc -dCW_VERSION="${{ steps.version.outputs.version }}" scripts\edutoolbox-cicd.iss
 
       - name: ☁️ Upload installer artifact
         uses: actions/upload-artifact@v4

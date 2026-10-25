@@ -13,7 +13,7 @@ PrivilegesRequired=admin
 UninstallDisplayIcon={app}\EduToolBox.exe
 
 [Files]
-Source: "..\dist\EduToolBox\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
+Source: "..\dist\EduToolBox\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{autodesktop}\EduToolBox"; Filename: "{app}\EduToolBox.exe"
