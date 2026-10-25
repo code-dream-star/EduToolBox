@@ -9,7 +9,8 @@ FluentPage {
     // 可滚动容器：卡片超出页面时可纵向滚动
     ScrollView {
         id: scrollView                    // 用于绑定子项宽度，保证 Flow 按视口宽度排列
-        anchors.fill: parent              // 填满整个页面
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         clip: true                        // 裁剪超出区域
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff  // 隐藏横向滚动条（Flow 自动换行，不需要横向滚动）
         // Flow 布局：根据宽度自动计算每行卡片数量，装不下自动换行
@@ -22,20 +23,20 @@ FluentPage {
             // name    = 卡片主标题
             // icon    = RinUI 字体图标名称（见 FluentSystemIcons-Index.js）
             // desc    = 卡片副标题/描述
-            // exePath = 点击卡片时启动的程序路径
+            // Path = 点击卡片时启动的程序路径
             Repeater {
                 model: [
                     {
                         name: "软件卸载",
                         icon: "ic_fluent_uninstall_app_20_regular",
                         desc: "卸载软件及残留文件",
-                        exePath: "AppTool/geek.exe"
+                        Path: "tools/AppTool/geek.exe"
                     },
                     {
                         name: "希沃白板修复",
                         icon: "ic_fluent_whiteboard_20_regular",
                         desc: "软件与电脑环境常规问题的修复",
-                        exePath: "AppTool/boardRepair.exe"
+                        Path: "tools/AppTool/boardRepair.exe"
                     },
                 ]
                 // 单个工具卡片
@@ -71,8 +72,8 @@ FluentPage {
                     TapHandler {
                         id: tapHandler
                         onTapped: {
-                            console.log("准备启动工具，传入路径:", modelData.exePath);
-                            AppLauncher.launch(modelData.exePath, false);
+                            console.log("准备启动工具，传入路径:", modelData.Path);
+                            AppLauncher.launch(modelData.Path, false);
                         }
                     }
                     // 卡片内容：图标在上、文字在下

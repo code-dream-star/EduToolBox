@@ -1,0 +1,22 @@
+[changelog]
+header = "# Changelog"
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+## {{ group | upper_first }}
+{% for commit in commits %}
+- {{ commit.message | upper_first }} ({{ commit.id | short }})
+{% endfor %}
+{% endfor %}
+"""
+footer = ""
+trim = true
+
+[commit_parsers]
+{ pattern = "\\[feat\\].*", group = "Features", skip = false },
+{ pattern = "\\[fix\\].*", group = "Bug Fixes", skip = false },
+{ pattern = "\\[refactor\\].*", group = "Refactor", skip = false },
+{ pattern = "\\[docs\\].*", group = "Docs", skip = false },
+{ pattern = "\\[style\\].*", group = "Style", skip = false },
+{ pattern = "\\[test\\].*", group = "Tests", skip = false },
+{ pattern = "\\[chore\\].*", group = "Misc", skip = false },
+{ pattern = ".*", group = "Other", skip = false },

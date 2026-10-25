@@ -1,0 +1,25 @@
+# EduToolBox 依赖声明（应用项目，不打包发布到 PyPI）
+# 新增/删除依赖后，在仓库根目录运行 `uv lock` 重新生成 uv.lock，并提交到 Git。
+
+[project]
+name = "edutoolbox"
+version = "0.1.0"
+description = "EduToolBox 电教工具箱（PySide6 + RinUI/QML 桌面应用）"
+requires-python = ">=3.11"
+dependencies = [
+    "PySide6>=6.5,<7",
+    "rinui>=0.4,<0.5",
+    "psutil>=5.9,<8",
+    # wmi / pywin32 仅 Windows 需要，Linux/macOS 下不安装
+    "wmi>=1.5,<2; sys_platform == 'win32'",
+]
+
+# 开发 / 打包工具：`uv sync` 默认会自动安装这一组
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.0",
+]
+
+[tool.uv]
+# 声明这是应用而非可构建的分发包，uv 不会尝试把本项目打包成 wheel
+package = false

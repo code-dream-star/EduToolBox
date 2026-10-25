@@ -12,7 +12,8 @@ FluentPage {
 
     ScrollView {
         id: scrollView                    // 用于绑定子项宽度，保证 Flow 按视口宽度排列
-        anchors.fill: parent              // 填满整个页面
+        Layout.fillWidth: true
+        Layout.fillHeight: true
         clip: true                        // 裁剪超出区域
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff  // 隐藏横向滚动条（Flow 自动换行，不需要横向滚动）
         // Flow 布局：根据宽度自动计算每行卡片数量，装不下自动换行
@@ -25,7 +26,7 @@ FluentPage {
             // name    = 卡片主标题
             // icon    = RinUI 字体图标名称（见 FluentSystemIcons-Index.js）
             // desc    = 卡片副标题/描述
-            // exePath = 点击卡片时启动的程序路径
+            // Path = 点击卡片时启动的程序路径
             InfoBar {
                 id: infoBar
                 width: parent.width
@@ -39,19 +40,19 @@ FluentPage {
                         name: "系统文件校验修复",
                         icon: "ic_fluent_wrench_20_regular",
                         desc: "用于检测、修复被丢失、损坏的系统文件",
-                        exePath: "SysTool/sfc.bat"
+                        Path: "tools/SysTool/sfc.bat"
                     },
                     {
                         name: "清空图标缓存",
                         icon: "ic_fluent_icons_20_regular",
                         desc: "图标显示为空白，开始菜单图标异常",
-                        exePath: "SysTool/IconCache.bat"
+                        Path: "tools/SysTool/IconCache.bat"
                     },
                     {
                         name: "清理系统缓存",
                         icon: "ic_fluent_delete_lines_20_regular",
                         desc: "清理系统临时文件和缓存数据",
-                        exePath: "SysTool/CleanTemp.bat"
+                        Path: "tools/SysTool/CleanTemp.bat"
                     },
                 ]
 
@@ -88,8 +89,8 @@ FluentPage {
                     TapHandler {
                         id: tapHandler
                         onTapped: {
-                            console.log("准备启动工具，传入路径:", modelData.exePath);
-                            AppLauncher.launch(modelData.exePath, true);
+                            console.log("准备启动工具，传入路径:", modelData.Path);
+                            AppLauncher.launch(modelData.Path, true);
                         }
                     }
                     // 卡片内容：图标在上、文字在下

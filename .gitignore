@@ -1,7 +1,17 @@
-# PyInstaller
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# pyinstaller
 build/
 dist/
 *.spec
-*.log
-__pycache__/
-*.pyc
+
+# innosetup output
+output/
+
+# uv缓存（本地缓存，CI缓存单独处理）
+.uv/

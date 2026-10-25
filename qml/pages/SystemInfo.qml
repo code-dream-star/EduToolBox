@@ -140,5 +140,55 @@ FluentPage {
                 horizontalAlignment: Text.AlignRight
             }
         }
+
+        // ========== 新增网络信息分组 ==========
+        Text {
+            typography: Typography.BodyStrong
+            text: "网络信息"
+        }
+        SettingCard {
+            radius: 6
+            width: parent.width
+            title: "IP地址"
+            Text {
+                typography: Typography.BodyStrong
+                text: SysInfo.ipInfo
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+        SettingCard {
+            radius: 6
+            width: parent.width
+            title: "MAC地址"
+            Text {
+                typography: Typography.BodyStrong
+                text: SysInfo.macInfo
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+        SettingCard {
+            radius: 6
+            width: parent.width
+            title: "默认网关"
+            Text {
+                typography: Typography.BodyStrong
+                text: SysInfo.gatewayInfo
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignRight
+            }
+        }
+        SettingCard {
+            radius: 6
+            width: parent.width
+            title: "DNS服务器"
+            Text {
+                typography: Typography.BodyStrong
+                text: SysInfo.dnsInfo
+                wrapMode: Text.WordWrap
+                horizontalAlignment: Text.AlignRight
+            }
+        }
     }
 }
